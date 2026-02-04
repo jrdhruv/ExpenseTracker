@@ -52,7 +52,7 @@ import java.time.LocalDate;
             }
               boolean removed = false;
               for(int i=0;i<transaction.size();i++){
-                if(transaction.get(i).id==_del_){
+                if(transaction.get(i).getID()==_del_){
                    transaction.remove(i);
                    removed =true;
                    break;
@@ -75,7 +75,7 @@ import java.time.LocalDate;
             }
               boolean updated = false;
                  for (int i = 0; i < transaction.size(); i++) {
-                     if (transaction.get(i).id == _upd_) {
+                     if (transaction.get(i).getID() == _upd_) {
                         transaction.set(i, new ID(_upd_, _amt_, _des_, LocalDate.now().toString()));
                         updated = true;
                         break;
@@ -89,14 +89,14 @@ import java.time.LocalDate;
 
           case  "summary":
              for(ID ob: transaction)
-             _sum_+= ob.amt;
+             _sum_+= ob.getAmt();
              System.out.println("Total expenses : "+_sum_);
              break;
 
           case  "list":
              System.out.println("ID\tDate\t\tDescription\tAmount");
              for(ID ob: transaction)
-             System.out.println(ob.id+"\t"+ob.day+"\t"+ob.des+"\t\t"+ob.amt);
+             System.out.println(ob.getID()+"\t"+ob.getDate()+"\t"+ob.getDes()+"\t"+ob.getAmt());
              break;
 
           case  "reset":
@@ -129,11 +129,11 @@ import java.time.LocalDate;
                 String[] parts = line.split(",");
                 if (parts.length >= 4) {
                     int fileId = Integer.parseInt(parts[0]);
-                    String day = parts[1];
+                    String date = parts[1];
                     String des = parts[2];
                     int amt = Integer.parseInt(parts[3]);
                     
-                    ID expense = new ID(fileId, amt, des, day);
+                    ID expense = new ID(fileId, amt, des, date);
                     transaction.add(expense);
                 }
             }
@@ -158,11 +158,11 @@ import java.time.LocalDate;
             // Write data
             for (ID expense : transaction) {
                 // Handle descriptions with commas by wrapping in quotes
-                String description = expense.des.contains(",") ? 
-                    "\"" + expense.des + "\"" : expense.des;
+                String description = expense.getDes().contains(",") ? 
+                    "\"" + expense.getDes() + "\"" : expense.getDes();
                     
-                bw.write(expense.id + "," + expense.day + "," + 
-                         description + "," + expense.amt);
+                bw.write(expense.getID() + "," + expense.getDate() + "," + 
+                         description + "," + expense.getAmt());
                 bw.newLine();
             }
         } catch (IOException e) {
