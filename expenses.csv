@@ -1,6 +1,2 @@
-<<<<<<< HEAD
 ID,Date,Description,Amount
-2,2026-02-01,breakfast,100
-=======
-ID,Date,Description,Amount
->>>>>>> 96b73a7 (getters and setters added)
+1,07/02/2026,Pizza,275
