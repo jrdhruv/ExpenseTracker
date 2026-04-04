@@ -1,2 +1,2 @@
-ID,Date,Description,Amount
-1,07/02/2026,Pizza,275
+ID,Date,Description,Category,Amount
+1,03/04/2026,Lunch,Food,123

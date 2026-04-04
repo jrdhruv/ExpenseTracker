@@ -1,6 +1,10 @@
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+
+enum Category{
+   None,Food,Travel,Laundary
+}
  public class ID {
    static int idCounter =0;
    private  int  amt;
@@ -9,27 +13,68 @@ import java.time.format.DateTimeFormatter;
    private LocalDate day;
    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
    private String date;
+   private Category category;
 
-    ID( int  amt,String des){
+    ID(){
+        this.id=0;
+        this.amt=0;
+        this.des="null";
+        this.day= LocalDate.now();
+        this.date=day.format(formatter);
+        this.category=Category.None;
+       }
+
+    ID(int amt){
+        idCounter++;
+        this.id=idCounter;
+        this.amt=amt;
+        this.des="null";
+        this.day= LocalDate.now();
+        this.date=day.format(formatter);
+        this.category=Category.None;
+       }
+
+    ID(int amt,String des){
         idCounter++;
         this.id=idCounter;
         this.amt=amt;
         this.des=des;
         this.day= LocalDate.now();
         this.date=day.format(formatter);
-      }
+        this.category=Category.None;
+       }
 
-      
-    ID(int id, int amt, String des, String date) {
+    ID(int amt,Category category){
+        idCounter++;
+        this.id=idCounter;
+        this.amt=amt;
+        this.des="null";
+        this.day= LocalDate.now();
+        this.date=day.format(formatter);
+        this.category=category;
+       }
+
+    ID(int amt,String des,Category category){
+      idCounter++;
+      this.id=idCounter;
+      this.amt=amt;
+      this.des=des;
+      this.day= LocalDate.now();
+      this.date=day.format(formatter);
+      this.category=category;
+     }
+    ID(int id, int amt, String des,Category category, String date) {
     this.id = id;
     this.amt = amt;
     this.des = des;
     this.date = date;
+    this.category=category;
     
     if (id > idCounter) 
         idCounter = id;  
-  
     }
+
+  
 
 
     public int getAmt(){
@@ -47,26 +92,38 @@ import java.time.format.DateTimeFormatter;
     public String getDate(){
       return date;
     }
+    public Category getCategory(){
+      return category;
+    }
 
-    public void setAmt(int amt){
-      if(amt<=0)
+
+
+    public int setAmt(int amt){
+      if(amt<0)
          throw new IllegalArgumentException("Amount cannot be negative");
-      this.amt=amt;
+     return this.amt=amt;
     }
-    public void getDes(String des){
+    public String setDes(String des){
       if(des == null || des.trim().isEmpty())
-        System.out.println("Description cannot be empty");
-      this.des=des;
+        return this.des="null";
+     return this.des=des;
     }
-    public void setID(int id){
+    public int setID(int id){
       if(id<=0)
          throw new IllegalArgumentException("ID cannot be negative");
-      this.id=id;
+      return this.id=id;
     }
-    public void setDay(LocalDate day){
-      this.day=day;
+    public LocalDate setDay(LocalDate day){
+      return this.day=day;
     }
-    public void setDate(String date){
-      this.date=date;
+    public String setDate(String date){
+     return this.date=date;
     }
+    public Category setCategory(Category category){
+      if(category==null)
+        return this.category=Category.None;
+      return this.category=category;
+    }
+
+    
   }
