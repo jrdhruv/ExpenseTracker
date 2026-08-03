@@ -1,2 +1,6 @@
 ID,Date,Description,Category,Amount
 1,03/04/2026,Lunch,Food,123
+2,11/05/2026,null,None,50
+3,11/05/2026,momos,None,40
+4,02/08/2026,Food,None,0
+5,03/08/2026,Dahi,Food,23

@@ -1,12 +1,10 @@
+package model;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
-enum Category{
-   None,Food,Travel,Laundary
-}
- public class ID {
-   static int idCounter =0;
+ public class Expense {
+   public static int idCounter =0;
    private  int  amt;
    private String des;
    private int id;
@@ -15,7 +13,7 @@ enum Category{
    private String date;
    private Category category;
 
-    ID(){
+   public Expense(){
         this.id=0;
         this.amt=0;
         this.des="null";
@@ -24,7 +22,7 @@ enum Category{
         this.category=Category.None;
        }
 
-    ID(int amt){
+    public Expense(int amt){
         idCounter++;
         this.id=idCounter;
         this.amt=amt;
@@ -34,7 +32,7 @@ enum Category{
         this.category=Category.None;
        }
 
-    ID(int amt,String des){
+    public Expense(int amt,String des){
         idCounter++;
         this.id=idCounter;
         this.amt=amt;
@@ -44,7 +42,7 @@ enum Category{
         this.category=Category.None;
        }
 
-    ID(int amt,Category category){
+    public Expense(int amt,Category category){
         idCounter++;
         this.id=idCounter;
         this.amt=amt;
@@ -54,7 +52,7 @@ enum Category{
         this.category=category;
        }
 
-    ID(int amt,String des,Category category){
+    public Expense(int amt,String des,Category category){
       idCounter++;
       this.id=idCounter;
       this.amt=amt;
@@ -63,7 +61,7 @@ enum Category{
       this.date=day.format(formatter);
       this.category=category;
      }
-    ID(int id, int amt, String des,Category category, String date) {
+    public Expense(int id, int amt, String des,Category category, String date) {
     this.id = id;
     this.amt = amt;
     this.des = des;
@@ -75,6 +73,9 @@ enum Category{
     }
 
   
+    public static void resetCounter() {
+    idCounter = 0;
+    }
 
 
     public int getAmt(){
