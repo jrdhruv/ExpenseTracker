@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 public class ExpenseService {
-   static Expense ob = new Expense();
+
 
      public  void addExpense(List<Expense> transaction,int amt, String des, Category category){
         Expense expense = new Expense(amt,des,category);

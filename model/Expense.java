@@ -66,6 +66,7 @@ import java.time.format.DateTimeFormatter;
     this.amt = amt;
     this.des = des;
     this.date = date;
+    this.day = LocalDate.parse(date,formatter);
     this.category=category;
     
     if (id > idCounter) 

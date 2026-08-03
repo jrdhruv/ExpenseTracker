@@ -2,18 +2,22 @@ package cli;
 
 import model.Expense;
 import model.Category;
+import service.ExpenseFilter;
 import service.ExpenseService;
 import repository.ExpenseRepository;
 import java.util.*;
 import java.io.*;
 import java.nio.charset.Charset;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
  class ExpenseCli{
 
    public static void main(String[] args){
        
        ExpenseRepository repository = new ExpenseRepository();
-       ExpenseService service = new ExpenseService();
+       ExpenseService service = new ExpenseService(); 
+       ExpenseFilter filter = new ExpenseFilter();
        ArrayList <Expense> transaction = new ArrayList<>(repository.findAll());
 
    
@@ -40,6 +44,9 @@ import java.nio.charset.Charset;
           case  "summary":
           handleSummary(service,transaction);
           break;
+          case  "filter":
+          handleFilter(filter,transaction,parts);
+          break;
           case  "list":
           handleList(transaction);
           break;
@@ -54,7 +61,7 @@ import java.nio.charset.Charset;
    
 
    private static void handleAdd(ExpenseService service, ArrayList<Expense> transaction, String[] parts) {
-        int amt = 0;
+        Integer amt = null;
         String des = "null";
         Category category = Category.None;
 
@@ -65,6 +72,11 @@ import java.nio.charset.Charset;
                 des = parts[i + 1];
             if (parts[i].equalsIgnoreCase("--category") && i + 1 < parts.length)
                 category = Category.valueOf(parts[i + 1]);
+        }
+     
+        if(amt == null){
+          System.out.println("Error: --amount is required");
+          return; 
         }
 
         try {
@@ -138,6 +150,42 @@ import java.nio.charset.Charset;
         }
     }
 
+    private static void handleFilter(ExpenseFilter filter, ArrayList<Expense> transaction , String[] parts){
+             Category category = null;
+             LocalDate date = null;
+             Integer month = null;
+             Integer year = null;
+             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+             for(int i =0 ;i<parts.length;i++){
+              if(parts[i].equalsIgnoreCase("--category") && i + 1 < parts.length)
+                category = Category.valueOf(parts[i+1]);
+              if(parts[i].equalsIgnoreCase("--date") && i + 1 < parts.length)
+                date = LocalDate.parse(parts[i+1],formatter);
+              if(parts[i].equalsIgnoreCase("--month") && i + 1 < parts.length)
+                month = Integer.parseInt(parts[i+1]);
+              if(parts[i].equalsIgnoreCase("--year") && i + 1 < parts.length)
+                year = Integer.parseInt(parts[i+1]);
+             }
+
+             try{
+              List<Expense> filtered = filter.filter(transaction, category,date, month, year);
+                  if (filtered.isEmpty()) 
+                    System.out.println("No matching expenses found.");
+                  else {
+                    System.out.println("ID\tDate\t\tDescription\tCategory\tAmount");
+                    for (Expense e : filtered) 
+                        System.out.println(e.getID() + "\t" + e.getDate() + "\t" + e.getDes() + "\t\t" + e.getCategory() + "\t\t" + e.getAmt());          
+                    }
+             }catch(NoSuchElementException e){
+              System.out.println("Error: "+e.getMessage());
+             }catch(IllegalArgumentException e){
+              System.out.println("Error: "+e.getMessage());
+             }catch (java.time.format.DateTimeParseException e) {
+              System.out.println("Error: Invalid date format, expected dd/MM/yyyy");
+             }
+    }
+
 
    private static void handleList(ArrayList<Expense> transaction){
              System.out.println("ID\tDate\t\tDescription\tCategory\tAmount");
@@ -151,6 +199,7 @@ import java.nio.charset.Charset;
              System.out.println("Reset Done");
     }
         
+
 
 }
 
