@@ -4,7 +4,7 @@ import model.Expense;
 import model.Category;
 import service.ExpenseFilter;
 import service.ExpenseService;
-import repository.ExpenseRepository;
+import repository.CsvExpenseRepository;
 import java.util.*;
 import java.io.*;
 import java.nio.charset.Charset;
@@ -15,23 +15,40 @@ import java.time.format.DateTimeFormatter;
 
    public static void main(String[] args){
        
-       ExpenseRepository repository = new ExpenseRepository();
+       CsvExpenseRepository repository = new CsvExpenseRepository();
        ExpenseService service = new ExpenseService(); 
        ExpenseFilter filter = new ExpenseFilter();
        ArrayList <Expense> transaction = new ArrayList<>(repository.findAll());
 
    
      BufferedReader br = new BufferedReader(new InputStreamReader(System.in,Charset.defaultCharset()));
-     String line = null;
-     try {
-        line = br.readLine();
-      } catch (IOException e) {
-        System.out.println("Problem : "+e);
-        e.printStackTrace();
-      }
-       String parts[]= line.split(" ");
-        switch (parts[0]) {
 
+     printHelp();
+
+    while(true){
+      System.out.print("\n> ");
+      String line = null;
+      try {
+          line = br.readLine();
+        } catch (IOException e) {
+          System.out.println("Problem : "+e);
+          e.printStackTrace();
+        }
+
+        if (line == null) break; // EOF (e.g. Ctrl+D)
+
+          line = line.trim();
+        if (line.isEmpty()) continue;
+
+          String[] parts = line.split(" ");
+
+        if (parts[0].equalsIgnoreCase("exit") || parts[0].equalsIgnoreCase("quit")) {
+                  repository.saveAll(transaction);
+                  System.out.println("Saved. Goodbye!");
+                  break;
+        }
+        
+        switch (parts[0]) {
           case "add": 
           handleAdd(service, transaction, parts);
           break;
@@ -56,10 +73,24 @@ import java.time.format.DateTimeFormatter;
 
           default: System.out.println("Error Try Again"); break;
         }
-       repository.saveAll(transaction);
+      }
     }
    
 
+
+  private static void printHelp() {
+        System.out.println("Available commands:");
+        System.out.println("  add --amount <n> --description <text> --category <cat>");
+        System.out.println("  delete --id <n>");
+        System.out.println("  update --id <n> [--amount <n>] [--description <text>] [--category <cat>]");
+        System.out.println("  list");
+        System.out.println("  summary");
+        System.out.println("  filter [--category <cat>] [--date dd/MM/yyyy] [--month <n>] [--year <n>]");
+        System.out.println("  reset");
+        System.out.println("  exit");
+    }
+
+  
    private static void handleAdd(ExpenseService service, ArrayList<Expense> transaction, String[] parts) {
         Integer amt = null;
         String des = "null";

@@ -1,11 +1,12 @@
 package repository;
 
 import model.Expense;
+import repository.ExpenseRepository;
 import model.Category;
 import java.util.*;
 import java.io.*;
 
-public class ExpenseRepository{
+public class CsvExpenseRepository implements ExpenseRepository{
     
     private static final String FILE_PATH = "expenses.csv";
 
