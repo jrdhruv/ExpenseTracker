@@ -4,18 +4,19 @@ import model.Expense;
 import model.Category;
 import service.ExpenseFilter;
 import service.ExpenseService;
-import repository.CsvExpenseRepository;
+import repository.JdbcExpenseRepository;
 import java.util.*;
 import java.io.*;
 import java.nio.charset.Charset;
+import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
- class ExpenseCli{
+ public class ExpenseCli{
 
    public static void main(String[] args){
        
-       CsvExpenseRepository repository = new CsvExpenseRepository();
+       JdbcExpenseRepository repository = new JdbcExpenseRepository();
        ExpenseService service = new ExpenseService(); 
        ExpenseFilter filter = new ExpenseFilter();
        ArrayList <Expense> transaction = new ArrayList<>(repository.findAll());
@@ -92,10 +93,12 @@ import java.time.format.DateTimeFormatter;
 
   
    private static void handleAdd(ExpenseService service, ArrayList<Expense> transaction, String[] parts) {
+       try{
         Integer amt = null;
         String des = "null";
+        String date=null;
         Category category = Category.None;
-
+      
         for (int i = 0; i < parts.length; i++) {
             if (parts[i].equalsIgnoreCase("--amount") && i + 1 < parts.length)
                 amt = Integer.parseInt(parts[i + 1]);
@@ -103,40 +106,60 @@ import java.time.format.DateTimeFormatter;
                 des = parts[i + 1];
             if (parts[i].equalsIgnoreCase("--category") && i + 1 < parts.length)
                 category = Category.valueOf(parts[i + 1]);
+            if (parts[i].equalsIgnoreCase("--date") && i + 1 < parts.length)
+                date = parts[i+1];
+                
         }
+      
      
         if(amt == null){
           System.out.println("Error: --amount is required");
           return; 
         }
 
-        try {
+          if(date != null)
+            service.addExpense(transaction, amt, des, category,date);
+          else
             service.addExpense(transaction, amt, des, category);
-            System.out.println("Expenses added successfully");
+
+          System.out.println("Expenses added successfully");
+        } catch (NumberFormatException e){
+            System.out.println("Error: amount must be a whole number");
         } catch (IllegalArgumentException e) {
             System.out.println("Error: " + e.getMessage());
-        }
+        } catch (java.time.format.DateTimeParseException e){
+            System.out.println("Error: Invalid date format, expected dd/MM/yyyy");
+        } 
+
    }
 
 
    private static void handleDelete(ExpenseService service , ArrayList<Expense> transaction,String[] parts){
-       int _del_=-1;
+       try{
+        Integer _del_= null;
         for(int i=0;i<parts.length;i++){
              if(parts[i].equalsIgnoreCase("--id") && i + 1 < parts.length)
              _del_ = Integer.parseInt(parts[i+1]);
             }
-
-        try{
+        
+        if(_del_ == null){
+          System.out.println("Error: --id is required");
+          return;
+        }
+    
           service.deleteExpense(transaction, _del_);
           System.out.println("Expense deleted successfully");
         }catch (NoSuchElementException e){
           System.out.println("Error: "+e.getMessage());
+        }catch (IllegalArgumentException e){
+          System.out.println("Error: "+ e.getMessage());
         }
    }
 
 
    private static void handleUpdate(ExpenseService service, ArrayList<Expense> transaction, String[] parts){
-          int upd = -1;
+        try{
+          Integer upd = null;
           Integer amt = null;
           String des = null;
           Category category = null;
@@ -151,14 +174,17 @@ import java.time.format.DateTimeFormatter;
                 if(parts[i].equalsIgnoreCase("--category") && i + 1 < parts.length)
                       category =  Category.valueOf(parts[i+1]);
             }
-
-            try {
+            if(upd== null){
+               System.out.println("Error: --id is required");
+               return;
+            }
+          
               service.updateExpense(transaction, upd, amt, des, category);
               System.out.println("Expenses updated successfully");
                 } catch (NoSuchElementException e) {
               System.out.println("Error: " + e.getMessage());
-                } catch (IllegalArgumentException e) {
-              System.out.println("Error: " + e.getMessage());
+                } catch (NumberFormatException e) {
+              System.out.println("Error: id must be a positive number");
             }
         }
    
@@ -182,6 +208,7 @@ import java.time.format.DateTimeFormatter;
     }
 
     private static void handleFilter(ExpenseFilter filter, ArrayList<Expense> transaction , String[] parts){
+          try{
              Category category = null;
              LocalDate date = null;
              Integer month = null;
@@ -199,7 +226,7 @@ import java.time.format.DateTimeFormatter;
                 year = Integer.parseInt(parts[i+1]);
              }
 
-             try{
+             
               List<Expense> filtered = filter.filter(transaction, category,date, month, year);
                   if (filtered.isEmpty()) 
                     System.out.println("No matching expenses found.");

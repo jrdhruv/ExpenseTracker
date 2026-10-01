@@ -14,6 +14,12 @@ public class ExpenseService {
         transaction.add(expense);
     }
 
+     public  void addExpense(List<Expense> transaction,int amt, String des, Category category,String date){
+        Expense expense = new Expense(amt,des,category,date);
+        transaction.add(expense);
+    }
+
+
 
      public void deleteExpense(List<Expense> transaction,int id ){
         boolean removed = false;

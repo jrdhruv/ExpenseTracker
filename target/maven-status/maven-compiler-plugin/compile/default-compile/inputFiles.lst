@@ -4,5 +4,6 @@
 /home/sleezy/Projects/ExpenseTracker/src/main/java/cli/ExpenseCli.java
 /home/sleezy/Projects/ExpenseTracker/src/main/java/service/ExpenseFilter.java
 /home/sleezy/Projects/ExpenseTracker/src/main/java/repository/ExpenseRepository.java
+/home/sleezy/Projects/ExpenseTracker/src/main/java/repository/DbConnection.java
 /home/sleezy/Projects/ExpenseTracker/src/main/java/repository/JdbcExpenseRepository.java
 /home/sleezy/Projects/ExpenseTracker/src/main/java/model/Category.java

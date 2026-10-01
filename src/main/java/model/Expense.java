@@ -23,9 +23,9 @@ import java.time.format.DateTimeFormatter;
        }
 
     public Expense(int amt){
+      setAmt(amt);
         idCounter++;
         this.id=idCounter;
-        this.amt=amt;
         this.des="null";
         this.day= LocalDate.now();
         this.date=day.format(formatter);
@@ -33,46 +33,56 @@ import java.time.format.DateTimeFormatter;
        }
 
     public Expense(int amt,String des){
+      setAmt(amt);
+      setDes(des);
         idCounter++;
         this.id=idCounter;
-        this.amt=amt;
-        this.des=des;
         this.day= LocalDate.now();
         this.date=day.format(formatter);
         this.category=Category.None;
        }
 
     public Expense(int amt,Category category){
+      setAmt(amt);
+      setCategory(category);
+      setDes(des);
         idCounter++;
         this.id=idCounter;
-        this.amt=amt;
-        this.des="null";
         this.day= LocalDate.now();
         this.date=day.format(formatter);
-        this.category=category;
        }
 
     public Expense(int amt,String des,Category category){
+      setAmt(amt);
+      setDes(des);
+      setCategory(category);
       idCounter++;
       this.id=idCounter;
-      this.amt=amt;
-      this.des=des;
       this.day= LocalDate.now();
       this.date=day.format(formatter);
-      this.category=category;
      }
-    public Expense(int id, int amt, String des,Category category, String date) {
-    this.id = id;
-    this.amt = amt;
-    this.des = des;
+
+
+    public Expense(int amt, String des,Category category, String date) {
+
+      setAmt(amt);
+      setDes(des);
+      setCategory(category);
     this.date = date;
     this.day = LocalDate.parse(date,formatter);
-    this.category=category;
+    this.id = ++idCounter;
     
-    if (id > idCounter) 
-        idCounter = id;  
     }
-
+    public Expense(int id, int amt, String des,Category category, String date) {
+      setAmt(amt);
+      setDes(des);
+      setCategory(category);
+      setDate(date);
+    this.day = LocalDate.parse(date,formatter);
+       setID(id);
+    if (id > idCounter) 
+      idCounter = id;  
+    }
   
     public static void resetCounter() {
     idCounter = 0;
@@ -112,7 +122,7 @@ import java.time.format.DateTimeFormatter;
     }
     public int setID(int id){
       if(id<=0)
-         throw new IllegalArgumentException("ID cannot be negative");
+         throw new IllegalArgumentException("ID must be positive");
       return this.id=id;
     }
     public LocalDate setDay(LocalDate day){
